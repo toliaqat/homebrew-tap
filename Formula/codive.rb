@@ -7,20 +7,20 @@ class Codive < Formula
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/touseefliaqat/agent-rust/releases/download/v#{version}/codive-aarch64-apple-darwin.tar.gz"
-      sha256 "PLACEHOLDER_SHA256_ARM64_MACOS"
+      sha256 "cfb7e380f18da7ef185071f4d1d55714c02a9422aca343cac3f3a5b3ef920423_ARM64_MACOS"
     else
       url "https://github.com/touseefliaqat/agent-rust/releases/download/v#{version}/codive-x86_64-apple-darwin.tar.gz"
-      sha256 "PLACEHOLDER_SHA256_X64_MACOS"
+      sha256 "cfb7e380f18da7ef185071f4d1d55714c02a9422aca343cac3f3a5b3ef920423_X64_MACOS"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
       url "https://github.com/touseefliaqat/agent-rust/releases/download/v#{version}/codive-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "PLACEHOLDER_SHA256_ARM64_LINUX"
+      sha256 "cfb7e380f18da7ef185071f4d1d55714c02a9422aca343cac3f3a5b3ef920423_ARM64_LINUX"
     else
       url "https://github.com/touseefliaqat/agent-rust/releases/download/v#{version}/codive-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "PLACEHOLDER_SHA256_X64_LINUX"
+      sha256 "cfb7e380f18da7ef185071f4d1d55714c02a9422aca343cac3f3a5b3ef920423_X64_LINUX"
     end
   end
 
