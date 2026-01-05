@@ -1,0 +1,64 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [update-formula]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update codive formula
+        run: |
+          VERSION="${{ github.event.client_payload.version }}"
+          SHA256_ARM64_MACOS="${{ github.event.client_payload.sha256_aarch64_apple }}"
+          SHA256_X64_MACOS="${{ github.event.client_payload.sha256_x86_64_apple }}"
+          SHA256_ARM64_LINUX="${{ github.event.client_payload.sha256_aarch64_linux }}"
+          SHA256_X64_LINUX="${{ github.event.client_payload.sha256_x86_64_linux }}"
+
+          cat > Formula/codive.rb << EOF
+          class Codive < Formula
+            desc "AI coding agent CLI built in Rust"
+            homepage "https://github.com/touseefliaqat/agent-rust"
+            version "${VERSION}"
+            license "MIT"
+
+            on_macos do
+              if Hardware::CPU.arm?
+                url "https://github.com/touseefliaqat/agent-rust/releases/download/v#{version}/codive-aarch64-apple-darwin.tar.gz"
+                sha256 "${SHA256_ARM64_MACOS}"
+              else
+                url "https://github.com/touseefliaqat/agent-rust/releases/download/v#{version}/codive-x86_64-apple-darwin.tar.gz"
+                sha256 "${SHA256_X64_MACOS}"
+              end
+            end
+
+            on_linux do
+              if Hardware::CPU.arm?
+                url "https://github.com/touseefliaqat/agent-rust/releases/download/v#{version}/codive-aarch64-unknown-linux-gnu.tar.gz"
+                sha256 "${SHA256_ARM64_LINUX}"
+              else
+                url "https://github.com/touseefliaqat/agent-rust/releases/download/v#{version}/codive-x86_64-unknown-linux-gnu.tar.gz"
+                sha256 "${SHA256_X64_LINUX}"
+              end
+            end
+
+            def install
+              bin.install "codive"
+            end
+
+            test do
+              assert_match version.to_s, shell_output("#{bin}/codive --version")
+            end
+          end
+          EOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/codive.rb
+          git commit -m "Update codive to v${{ github.event.client_payload.version }}"
+          git push
